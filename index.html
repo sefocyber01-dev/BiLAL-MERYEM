@@ -1,70 +1,118 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Bilal & Meryem Sayaç</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    background: #1a1a1a;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    font-family: 'Arial', sans-serif;
-    color: #fff;
-  }
-  .card {
-    position: relative;
-    width: 400px;
-    height: 400px;
-    background: linear-gradient(135deg, #ff4e50, #f9d423);
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-    margin-bottom: 20px;
-  }
-  .card h2 {
-    margin: 5px 0;
-    font-size: 2em;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  }
-  .card .date {
-    font-size: 1.2em;
-    margin-top: 10px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-  }
-  .card .counter {
-    font-size: 2em;
-    margin-top: 15px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bilal ♥ Meryem Aşk Sayacı 💕</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #1a001a url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFElEQVQI12P4//8/AwMDEwMDAwMDEwMDAwMDEwMDAwMDEwMD///8HAP//AwCM+wYAAAAAElFTkSuQmCC') repeat;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+        h1 {
+            color: #ff69b4;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .counter {
+            font-size: 2em;
+            color: #ff1493;
+            line-height: 1.5;
+        }
+        .text {
+            font-size: 1.2em;
+            color: #ffd1dc;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .heart {
+            position: absolute;
+            font-size: 1.5em;
+            color: #ff69b4;
+            opacity: 0.7;
+            animation: float 5s infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-50px) rotate(45deg); opacity: 0.4; }
+            100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
+        }
+    </style>
 </head>
-<body>
+<body onload="updateCounter()">
+    <div class="hearts"></div>
+    <h1>Bilal ♥ Meryem</h1>
+    <div class="counter" id="counter"></div>
+    <div class="text">
+        "BU SİTE BİR GÜN SAYAR DEĞİL<br>
+        BAŞIMIN EN ATÖLYE İÇİN SAYAN<br>
+        BİR SAYAÇ ÇÜNKÜ SENLE<br>
+        GEÇİRDİĞİM HER ZAMAN EN MUTLU<br>
+        VE GÜZEL ZAMANIM..."
+    </div>
+    <div style="font-size: 0.8em; color: #ff69b4; margin-top: 20px;">
+        Şarkı çalmak için sayfayı tıklayın
+    </div>
 
-<div class="card">
-  <h2>Bilal & Meryem</h2>
-  <div class="date">18 Şubat 2025</div>
-  <div class="counter" id="counter">0 saniye</div>
-</div>
+    <script>
+        function createHearts() {
+            const heartsContainer = document.querySelector('.hearts');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                heartsContainer.appendChild(heart);
+            }
+        }
 
-<script>
-const startDate = new Date('2025-02-18T00:00:00');
-function updateCounter() {
-  const now = new Date();
-  const diff = Math.floor((now - startDate) / 1000); // fark saniye cinsinden
-  document.getElementById('counter').innerText = diff.toLocaleString() + ' saniye';
-}
-setInterval(updateCounter, 1000);
-updateCounter();
-</script>
+        function updateCounter() {
+            const startDate = new Date('2025-02-18T00:00:00+03:00'); // 18 Şubat 2025
+            const now = new Date();
+            const diff = now - startDate;
 
+            if (diff < 0) {
+                document.getElementById('counter').innerHTML = "Henüz zaman başlamadı! 😅";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('counter').innerHTML = `
+                ${days} gün<br>
+                ${hours} saat<br>
+                ${minutes} dakika<br>
+                ${seconds} saniye
+            `;
+
+            setTimeout(updateCounter, 1000); // Her saniye güncelle
+        }
+
+        createHearts();
+
+        // Sayfa tıklandığında müzik çal (örnek bir ses URL'si, kendi müziğini ekleyebilirsin)
+        document.body.addEventListener('click', function() {
+            const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
+            audio.play().catch(error => console.log("Ses çalınamadı:", error));
+        });
+    </script>
 </body>
 </html>
