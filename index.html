@@ -51,6 +51,14 @@
             50% { transform: translateY(-50px) rotate(45deg); opacity: 0.4; }
             100% { transform: translateY(0) rotate(0deg); opacity: 0.7; }
         }
+        #youtube-player {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1px; /* Gizli tut */
+            height: 1px;
+            opacity: 0;
+        }
     </style>
 </head>
 <body onload="updateCounter()">
@@ -68,6 +76,10 @@
         Şarkı çalmak için sayfayı tıklayın
     </div>
 
+    <!-- YouTube Player -->
+    <div id="youtube-player"></div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         function createHearts() {
             const heartsContainer = document.querySelector('.hearts');
@@ -108,11 +120,32 @@
 
         createHearts();
 
-        // Sayfa tıklandığında müzik çal (örnek bir ses URL'si, kendi müziğini ekleyebilirsin)
-        document.body.addEventListener('click', function() {
-            const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
-            audio.play().catch(error => console.log("Ses çalınamadı:", error));
-        });
+        // YouTube API ile müzik çalma
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '1',
+                width: '1',
+                videoId: 'aDju79MtUR8', // Senin seçtiğin şarkı
+                playerVars: {
+                    'autoplay': 0, // Tıklama ile başlasın
+                    'controls': 0,
+                    'modestbranding': 1,
+                    'loop': 1,
+                    'playlist': 'aDju79MtUR8', // Döngü için
+                    'playsinline': 1
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            document.body.addEventListener('click', function() {
+                event.target.playVideo(); // Tıklama ile çal
+            }, { once: true }); // Tek seferlik tıklama
+        }
     </script>
 </body>
 </html>
