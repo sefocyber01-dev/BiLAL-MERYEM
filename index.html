@@ -59,6 +59,15 @@
             height: 1px;
             opacity: 0;
         }
+        .music-link {
+            font-size: 0.9em;
+            color: #ff69b4;
+            margin-top: 20px;
+        }
+        .music-link a {
+            color: #fff;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body onload="updateCounter()">
@@ -72,11 +81,12 @@
         GEÇİRDİĞİM HER ZAMAN EN MUTLU<br>
         VE GÜZEL ZAMANIM..."
     </div>
-    <div style="font-size: 0.8em; color: #ff69b4; margin-top: 20px;">
-        Şarkı çalmak için sayfaya tıklayın (app'lerde manuel izin gerekebilir)
+    <div class="music-link">
+        Şarkıyı dinlemek için <a href="https://youtu.be/aDju79MtUR8" target="_blank">buraya tıkla 💕</a><br>
+        (Instagram'da ses için sayfayı açıp manuel başlatabilirsin)
     </div>
 
-    <!-- YouTube Player -->
+    <!-- YouTube Player (isteğe bağlı, manuel başlatma için) -->
     <div id="youtube-player"></div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -121,7 +131,7 @@
 
         createHearts();
 
-        // YouTube API
+        // YouTube API (isteğe bağlı, manuel başlatma için)
         let player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
@@ -139,30 +149,19 @@
                 },
                 events: {
                     'onReady': onPlayerReady,
-                    'onError': function(event) { console.log('YouTube hata:', event.data); } // Hata logla
+                    'onError': function(event) { console.log('YouTube hata:', event.data); }
                 }
             });
         }
 
         function onPlayerReady(event) {
-            // Sayfa yüklendiğinde hazır ol
             console.log('YouTube hazır');
-            // Tıklama ile çal (app'lerde kullanıcı etkileşimi şart)
             document.body.addEventListener('click', function playMusic() {
                 event.target.playVideo();
                 console.log('Müzik başlatıldı');
-                // Tekrar tıklama engelle
                 document.body.removeEventListener('click', playMusic);
             }, { once: true });
         }
-
-        // Eğer API yüklenmezse, fallback: Direkt YouTube linki göster
-        window.addEventListener('error', function() {
-            const fallback = document.createElement('div');
-            fallback.innerHTML = '<p style="color: #ff69b4;">Müzik yüklenemedi? <a href="https://youtu.be/aDju79MtUR8" target="_blank" style="color: #fff;">Şarkıyı buradan aç 💕</a></p>';
-            fallback.style.marginTop = '20px';
-            document.body.appendChild(fallback);
-        });
     </script>
 </body>
 </html>
