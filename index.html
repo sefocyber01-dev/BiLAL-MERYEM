@@ -59,12 +59,12 @@
             height: 1px;
             opacity: 0;
         }
-        .music-link {
+        .music-instruction {
             font-size: 0.9em;
             color: #ff69b4;
             margin-top: 20px;
         }
-        .music-link a {
+        .music-instruction a {
             color: #fff;
             text-decoration: underline;
         }
@@ -81,15 +81,15 @@
         GEÇİRDİĞİM HER ZAMAN EN MUTLU<br>
         VE GÜZEL ZAMANIM..."
     </div>
-    <div class="music-link">
-        Şarkıyı dinlemek için <a href="https://youtu.be/aDju79MtUR8" target="_blank">buraya tıkla 💕</a><br>
-        (Instagram'da ses için sayfayı açıp manuel başlatabilirsin)
+    <div class="music-instruction">
+        Şarkı çalmıyor mu? <a href="https://youtu.be/aDju79MtUR8" target="_blank">Buradan dinle 💕</a><br>
+        (Ses için sayfaya tıkla, app'lerde manuel başlatma gerekebilir)
     </div>
 
-    <!-- YouTube Player (isteğe bağlı, manuel başlatma için) -->
+    <!-- YouTube Player -->
     <div id="youtube-player"></div>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://www.youtube.com/iframe_api" async></script>
     <script>
         function createHearts() {
             const heartsContainer = document.querySelector('.hearts');
@@ -131,37 +131,64 @@
 
         createHearts();
 
-        // YouTube API (isteğe bağlı, manuel başlatma için)
         let player;
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtube-player', {
-                height: '1',
-                width: '1',
-                videoId: 'aDju79MtUR8',
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'modestbranding': 1,
-                    'loop': 1,
-                    'playlist': 'aDju79MtUR8',
-                    'playsinline': 1,
-                    'enablejsapi': 1
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onError': function(event) { console.log('YouTube hata:', event.data); }
-                }
-            });
+            try {
+                player = new YT.Player('youtube-player', {
+                    height: '1',
+                    width: '1',
+                    videoId: 'aDju79MtUR8',
+                    playerVars: {
+                        'autoplay': 0,
+                        'controls': 0,
+                        'modestbranding': 1,
+                        'loop': 1,
+                        'playlist': 'aDju79MtUR8',
+                        'playsinline': 1,
+                        'enablejsapi': 1,
+                        'mute': 0
+                    },
+                    events: {
+                        'onReady': onPlayerReady,
+                        'onError': function(event) { console.log('YouTube hata:', event.data); }
+                    }
+                });
+                console.log('YouTube API yüklendi');
+            } catch (error) {
+                console.log('YouTube API yüklenemedi:', error);
+                showFallback();
+            }
         }
 
         function onPlayerReady(event) {
             console.log('YouTube hazır');
             document.body.addEventListener('click', function playMusic() {
-                event.target.playVideo();
-                console.log('Müzik başlatıldı');
+                try {
+                    event.target.unMute();
+                    event.target.playVideo();
+                    console.log('Müzik başlatıldı');
+                } catch (e) {
+                    console.log('Müzik başlatılamadı:', e);
+                    showFallback();
+                }
                 document.body.removeEventListener('click', playMusic);
             }, { once: true });
         }
+
+        function showFallback() {
+            const fallback = document.createElement('div');
+            fallback.innerHTML = '<p style="color: #ff69b4;">Müzik yüklenemedi? <a href="https://youtu.be/aDju79MtUR8" target="_blank" style="color: #fff;">Buradan aç 💕</a></p>';
+            fallback.style.marginTop = '20px';
+            document.body.appendChild(fallback);
+        }
+
+        // API yüklenmediyse fallback göster
+        setTimeout(() => {
+            if (typeof YT === 'undefined') {
+                console.log('YouTube API timeout, fallback aktif');
+                showFallback();
+            }
+        }, 5000); // 5 saniye bekle
     </script>
 </body>
 </html>
