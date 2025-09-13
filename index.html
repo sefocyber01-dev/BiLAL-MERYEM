@@ -7,7 +7,7 @@
   body {
     margin: 0;
     padding: 0;
-    background: #1c1c1c; /* Fotoğrafın koyu arka plan stiline benzer */
+    background: #1a1a1a;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,7 +20,7 @@
     position: relative;
     width: 400px;
     height: 400px;
-    background: linear-gradient(135deg, #ff4e50, #f9d423); /* Fotoğrafın renk tonlarını simüle ettik */
+    background: linear-gradient(135deg, #ff4e50, #f9d423);
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -40,44 +40,30 @@
     margin-top: 10px;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
   }
-  h1 {
-    font-size: 4em;
-    margin: 10px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-  }
-  button {
-    padding: 10px 25px;
-    font-size: 1.5em;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    background: #ff3d00;
-    color: #fff;
-    transition: 0.3s;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.4);
-  }
-  button:hover {
-    background: #ff5722;
+  .card .counter {
+    font-size: 2em;
+    margin-top: 15px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
   }
 </style>
 </head>
 <body>
 
 <div class="card">
-  <h2>Bilal</h2>
-  <h2>Meryem</h2>
+  <h2>Bilal & Meryem</h2>
   <div class="date">18 Şubat 2025</div>
+  <div class="counter" id="counter">0 saniye</div>
 </div>
 
-<h1 id="counter">0</h1>
-<button onclick="increase()">+</button>
-
 <script>
-let count = 0;
-function increase() {
-    count++;
-    document.getElementById('counter').innerText = count;
+const startDate = new Date('2025-02-18T00:00:00');
+function updateCounter() {
+  const now = new Date();
+  const diff = Math.floor((now - startDate) / 1000); // fark saniye cinsinden
+  document.getElementById('counter').innerText = diff.toLocaleString() + ' saniye';
 }
+setInterval(updateCounter, 1000);
+updateCounter();
 </script>
 
 </body>
