@@ -55,7 +55,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 1px; /* Gizli tut */
+            width: 1px;
             height: 1px;
             opacity: 0;
         }
@@ -73,7 +73,7 @@
         VE GÜZEL ZAMANIM..."
     </div>
     <div style="font-size: 0.8em; color: #ff69b4; margin-top: 20px;">
-        Şarkı çalmak için sayfayı tıklayın
+        Şarkı çalmak için sayfaya tıklayın (app'lerde manuel izin gerekebilir)
     </div>
 
     <!-- YouTube Player -->
@@ -100,6 +100,7 @@
 
             if (diff < 0) {
                 document.getElementById('counter').innerHTML = "Henüz zaman başlamadı! 😅";
+                setTimeout(updateCounter, 1000);
                 return;
             }
 
@@ -115,37 +116,53 @@
                 ${seconds} saniye
             `;
 
-            setTimeout(updateCounter, 1000); // Her saniye güncelle
+            setTimeout(updateCounter, 1000);
         }
 
         createHearts();
 
-        // YouTube API ile müzik çalma
+        // YouTube API
         let player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('youtube-player', {
                 height: '1',
                 width: '1',
-                videoId: 'aDju79MtUR8', // Senin seçtiğin şarkı
+                videoId: 'aDju79MtUR8',
                 playerVars: {
-                    'autoplay': 0, // Tıklama ile başlasın
+                    'autoplay': 0,
                     'controls': 0,
                     'modestbranding': 1,
                     'loop': 1,
-                    'playlist': 'aDju79MtUR8', // Döngü için
-                    'playsinline': 1
+                    'playlist': 'aDju79MtUR8',
+                    'playsinline': 1,
+                    'enablejsapi': 1
                 },
                 events: {
-                    'onReady': onPlayerReady
+                    'onReady': onPlayerReady,
+                    'onError': function(event) { console.log('YouTube hata:', event.data); } // Hata logla
                 }
             });
         }
 
         function onPlayerReady(event) {
-            document.body.addEventListener('click', function() {
-                event.target.playVideo(); // Tıklama ile çal
-            }, { once: true }); // Tek seferlik tıklama
+            // Sayfa yüklendiğinde hazır ol
+            console.log('YouTube hazır');
+            // Tıklama ile çal (app'lerde kullanıcı etkileşimi şart)
+            document.body.addEventListener('click', function playMusic() {
+                event.target.playVideo();
+                console.log('Müzik başlatıldı');
+                // Tekrar tıklama engelle
+                document.body.removeEventListener('click', playMusic);
+            }, { once: true });
         }
+
+        // Eğer API yüklenmezse, fallback: Direkt YouTube linki göster
+        window.addEventListener('error', function() {
+            const fallback = document.createElement('div');
+            fallback.innerHTML = '<p style="color: #ff69b4;">Müzik yüklenemedi? <a href="https://youtu.be/aDju79MtUR8" target="_blank" style="color: #fff;">Şarkıyı buradan aç 💕</a></p>';
+            fallback.style.marginTop = '20px';
+            document.body.appendChild(fallback);
+        });
     </script>
 </body>
 </html>
